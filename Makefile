@@ -10,4 +10,7 @@ docker-down:
 docker-stop:
 	sudo docker compose stop
 
+composer-update:
+	sudo docker exec raketa-fpm composer update
+
 	

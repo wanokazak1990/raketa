@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Catalog;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\Product\ProductRepository;
+use App\Http\Resources\Product\ProductCollection;
+
 
 class ProductController extends Controller
 {
@@ -21,6 +23,6 @@ class ProductController extends Controller
     {
         $products = $this->repo->paginate($request->all());
 
-        return response()->json($products);
+        return new ProductCollection($products);
     }
 }
