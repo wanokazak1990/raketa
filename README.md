@@ -1,5 +1,5 @@
 <h1>RAKETA TZ</h1>
-
+<img src="https://i.pinimg.com/originals/65/ed/fd/65edfdb2f3aea4de0f62072678ebb232.jpg">
 <h3>Архитектура</h3>
 <div>Проект разворачивается в докер-контейнерах</div>
 <ul>
