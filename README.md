@@ -1,5 +1,5 @@
 <h1>RAKETA TZ</h1>
-<hr>
+
 <h3>Архитектура</h3>
 <div>Проект разворачивается в докер-контейнерах</div>
 <ul>
@@ -46,3 +46,12 @@
 <code>
   make laravel-seed
 </code>
+
+<div>
+  Маршрут для получения каталога - localhost:8080/api/products<br>
+  method - GET<br>
+  params - <br>
+  <code>
+    properties[option_id][] = value_id (properties[1][]=1&properties[1][]=2&properties[2][]=4
+  </code>
+</div>
