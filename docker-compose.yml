@@ -1,0 +1,108 @@
+version: "3.8"
+
+networks:
+  general:
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.19.0.0/24"
+  database:
+
+services:  
+  nginx:
+    container_name: raketa-nginx
+    build:
+      context: ./docker
+      dockerfile: nginx.docker
+    networks: 
+      general:
+        ipv4_address: 10.19.0.10
+    volumes:
+    - ./docker/nginx:/etc/nginx/conf.d
+    - ./docker/nginx/logs:/var/log/nginx/
+    - ./app/:/var/www
+    ports:
+    - "8080:80"
+    - "443:443"
+    tty: true
+    
+
+  php-fpm:
+    container_name: raketa-fpm
+    build:
+      context: ./
+      dockerfile: docker/php-fpm.docker
+    networks: 
+      general:
+        ipv4_address: 10.19.0.11
+      database:
+    volumes:
+      - ./app/:/var/www
+    environment:
+      - "UPLOAD_LIMIT=20M"
+      - "DB_PORT=3306"
+      - "DB_HOST=raketa-mysql"
+    tty: true
+
+  php-cli:
+    container_name: raketa-cli
+    build:
+      context: ./
+      dockerfile: docker/php-cli.docker
+    networks: 
+      general:
+        ipv4_address: 10.19.0.12
+      database:
+    volumes:
+      - ./app/:/var/www
+    environment:
+      - "UPLOAD_LIMIT=20M"
+      - "DB_PORT=3306"
+      - "DB_HOST=raketa-mysql"
+    tty: true
+
+  node:
+    container_name: raketa-node
+    networks: 
+      general:
+        ipv4_address: 10.19.0.14
+    build:
+      context: ./
+      dockerfile: docker/node.docker
+    volumes:
+      - ./app/:/var/www
+    tty: true
+
+  mysql:
+    container_name: raketa-mysql
+    image: mysql:5.7
+    command: --sql_mode="ONLY_FULL_GROUP_BY"
+    networks: 
+      - database
+    volumes: 
+      - ./docker/images/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=app
+      - MYSQL_HOST= raketa-mysql
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=secret
+      - MYSQL_PORT=3306
+    ports:
+      - "33061:3306"
+    tty: true
+
+  phpmyadmin:
+    container_name: raketa-phpmyadmin
+    image: corbinu/docker-phpmyadmin
+    networks: 
+      - database
+    ports:
+        - 8686:80
+    environment:
+        MYSQL_USERNAME: app
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_PORT_3306_TCP_ADDR: raketa-mysql
+    tty: true
+
+  
